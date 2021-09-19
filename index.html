@@ -1,87 +1,105 @@
-<input type="range" id="range" min="0" max="2" value="1" step=".01" oninput="this.nextElementSibling.value = this.value; r = this.value; refreshGraph()">
-<output>0.5</output>
-<br>
-<canvas id="graph" width="500" height="500">
-	
-</canvas>
+<div style="display: flex; flex-direction: row;">
+	<div>
+
+		<input type="range" id="range" min="0" max="2" value="1" step=".01" oninput="this.nextElementSibling.value = this.value; r = this.value; refreshGraph()">
+		<output>0.5</output>
+		<br>
+		<canvas id="graph" width="500" height="500">
+			
+		</canvas>
 
 
-<script>
-	let r = 1;
-	const graph = document.getElementById("graph");
-	const ctx = graph.getContext("2d");
-	ctx.lineWidth = .01;
-	ctx.translate(250, 250);
-	ctx.scale(100, -100);
+		<script>
+			let r = 1;
+			const graph = document.getElementById("graph");
+			const ctx = graph.getContext("2d");
+			ctx.lineWidth = .01;
+			ctx.translate(250, 250);
+			ctx.scale(100, -100);
 
-	function refreshGraph() {
-		ctx.clearRect(-1000, -1000, 2000, 2000);
-		drawLine(0, -1000, 0, 1000);
-		drawLine(-1000, 0, 1000, 0);
-		point(r, 0);
-		drawCircle(1, 0, 1);
-		drawCircle(0, 0, r);
-		const { x, y } = getIntersection(r);
-		point(x, y);
-		drawLine(0, 0, x, y);
-		const { x0, y0, x1, y1 } = getTangent(x, y);
-		drawLine(x0, y0, x1, y1);
-	}
+			function refreshGraph() {
+				ctx.clearRect(-1000, -1000, 2000, 2000);
+				drawLine(0, -1000, 0, 1000);
+				drawLine(-1000, 0, 1000, 0);
+				point(r, 0);
+				drawCircle(1, 0, 1);
+				drawCircle(0, 0, r);
+				const { x, y } = getIntersection(r);
+				point(x, y);
+				drawLine(0, 0, x, y);
+				const { x0, y0, x1, y1 } = getTangent(x, y);
+				drawLine(x0, y0, x1, y1);
+			}
 
-	function getTangent(px, py) {
-		//	slope: d = (y2 - y1) / (x2 - x1) = (y - 0) / (x - 0) = y / x
-		const m = py / px
-		const d = -px / py
-		//	line formula: y = d * x + b
-		//	when y = 0, x = 2
-		//				  0 = d * 2 + b
-		//				  b = - 2 * d = 2 * px / py
-		const b = -2 * d;
-		//	line formula = y = d * x + b
-		//	when y = 0 => x = b / d
-		//	when x = 0 => y = b
-		return {
-			x0: -1000, y0: d * -1000 + b,
-			x1: 1000, y1: d * 1000 + b,
-		};
-	}
+			function getTangent(px, py) {
+				//	slope: d = (y2 - y1) / (x2 - x1) = (y - 0) / (x - 0) = y / x
+				const m = py / px
+				const d = -px / py
+				//	line formula: y = d * x + b
+				//	when y = 0, x = 2
+				//				  0 = d * 2 + b
+				//				  b = - 2 * d = 2 * px / py
+				const b = -2 * d;
+				//	line formula = y = d * x + b
+				//	when y = 0 => x = b / d
+				//	when x = 0 => y = b
+				return {
+					x0: -1000, y0: d * -1000 + b,
+					x1: 1000, y1: d * 1000 + b,
+				};
+			}
 
-	function getIntersection(r) {
-		//	x^2 + y^2 = r^2
-		//	(x - 1)^2 + y^2 = 1^2 = 1
-		//	x^2 - 2x + 1 + y^2 = 1
-		//	2x -1 = r^2 - 1
-		//	x = r^2 / 2
-		//	y = Math.sqrt(r^2 - x^2)
-		const x = r * r / 2;
-		return {
-			x,
-			y: Math.sqrt(r * r - x * x),
-		};
-	}
+			function getIntersection(r) {
+				//	x^2 + y^2 = r^2
+				//	(x - 1)^2 + y^2 = 1^2 = 1
+				//	x^2 - 2x + 1 + y^2 = 1
+				//	2x -1 = r^2 - 1
+				//	x = r^2 / 2
+				//	y = Math.sqrt(r^2 - x^2)
+				const x = r * r / 2;
+				return {
+					x,
+					y: Math.sqrt(r * r - x * x),
+				};
+			}
 
 
-	function drawCircle(x, y, radius) {
-		ctx.beginPath();
-		ctx.arc(x, y, radius, 0, 2 * Math.PI);
-		ctx.stroke();
-	}
+			function drawCircle(x, y, radius) {
+				ctx.beginPath();
+				ctx.arc(x, y, radius, 0, 2 * Math.PI);
+				ctx.stroke();
+			}
 
-	function point(x, y) {
-		ctx.strokeStyle = "#FF0000";
-		ctx.beginPath();
-		ctx.arc(x, y, .02, 0, 2 * Math.PI);
-		ctx.stroke();
-	}
+			function point(x, y) {
+				ctx.strokeStyle = "#FF0000";
+				ctx.beginPath();
+				ctx.arc(x, y, .02, 0, 2 * Math.PI);
+				ctx.stroke();
+			}
 
-	function drawLine(x0, y0, x1, y1) {
-		ctx.strokeStyle = "#666666";
-		ctx.beginPath();
-		ctx.moveTo(x0, y0);
-		ctx.lineTo(x1, y1);
-		ctx.stroke();
-	}
+			function drawLine(x0, y0, x1, y1) {
+				ctx.strokeStyle = "#666666";
+				ctx.beginPath();
+				ctx.moveTo(x0, y0);
+				ctx.lineTo(x1, y1);
+				ctx.stroke();
+			}
 
-	refreshGraph();
+			refreshGraph();
 
-</script>
+		</script>
+
+	</div>
+	<div>
+
+		<iframe id="source-code" width="100%" height="100%" style="display:none"></iframe>
+
+		<script>
+			document.getElementById("source-code").src = "view-source:" + location.href;
+			document.getElementById("source-code").style.display = "";
+		</script>
+
+	</div>
+</div>
+
+
