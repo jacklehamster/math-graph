@@ -91,11 +91,10 @@
 
 	</div>
 	<div>
-
-		<iframe id="source-code" width="100%" height="100%" style="display:none"></iframe>
+		<a id="source-code" style="display: none">link to source code</a>
 
 		<script>
-			document.getElementById("source-code").src = "view-source:" + location.href;
+			document.getElementById("source-code").href = "view-source:" + location.href;
 			document.getElementById("source-code").style.display = "";
 		</script>
 
